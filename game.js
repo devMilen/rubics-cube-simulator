@@ -72,7 +72,7 @@ gl.enableVertexAttribArray(positionAttribute);
 
 const mat4 = glMatrix.mat4;
 let mat = mat4.create();
-mat4.ortho(mat, 0, canvas.width, canvas.height, 0, -1, 1);  // Adjust to canvas size
+mat4.ortho(mat, 0, canvas.width, canvas.height, 0, -1, 1);
 const matLocation = gl.getUniformLocation(shaderProgram, "mat");
 gl.uniformMatrix4fv(matLocation, false, mat);
 
@@ -83,10 +83,10 @@ function gameLoop() {
     gl.clear(gl.COLOR_BUFFER_BIT);
 
     const updatedVertices = new Float32Array([
-        -500,  500, 0.0,  
-        -500, -500, 0.0, 
-         500, -500, 0.0,  
-         500,  500, 0.0   
+        500,  500, 0.0,  
+        1000, 500, 0.0, 
+        1000, 500, 0.0,  
+         1000,  1000, 0.0   
     ]);
 
     gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
