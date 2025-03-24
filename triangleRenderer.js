@@ -18,17 +18,19 @@ function createShader(vertexShader, fragmentShader) {
 
     return shaderProgram;
 }
-function render() {
-    gl.clear(gl.COLOR_BUFFER_BIT);
-    gl.drawArrays(gl.TRIANGLES, 0, 3);
-    requestAnimationFrame(render);
-}
+// function render() {
+//     gl.clear(gl.COLOR_BUFFER_BIT);
+//     gl.drawArrays(gl.TRIANGLES, 0, 3);
+//     requestAnimationFrame(render);
+// }
 
-//canvas setup & webgl context
+// canvas setup & webgl context
 const canvas = document.getElementById('gameCanvas');
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 const gl = canvas.getContext('webgl');
+gl.viewport(0, 0, canvas.width, canvas.height);
+gl.clearColor(0, 0, 0, 1);
 
 
 //buffer
@@ -46,11 +48,12 @@ gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.STATIC_DRAW);
 const vertexShader = `
 attribute vec2 a_position;
 attribute vec3 color;
+uniform mat4 u_transform;
 varying vec3 fragColor;
 
 void main() {
     fragColor = color;
-    gl_Position = vec4(a_position, 0.0, 1.0);
+    gl_Position = u_transform * vec4(a_position, 0.0, 1.0);
 }
 `;
 
@@ -87,5 +90,37 @@ gl.useProgram(null);
 gl.bindBuffer(gl.ARRAY_BUFFER, VBO);
 gl.enableVertexAttribArray(positionLocation);
 gl.useProgram(shaderProgram);
+
+
+//mat4 init
+const transformLocation = gl.getUniformLocation(shaderProgram, 'u_transform');
+let transformMatrix = mat4.create();
+let angle = 0;
+let x = 0.0; 
+let y = 0.0;  
+let speed = 0.02; 
+
+mat4.translate(transformMatrix, transformMatrix, [-0.5, 0, 0]);
+
+function render() {
+    gl.clear(gl.COLOR_BUFFER_BIT);
+
+    //the pos is in x and y
+    // x += speed;
+    // if (x > 1.0) x = -1.0; 
+    // mat4.identity(transformMatrix); 
+    // mat4.translate(transformMatrix, transformMatrix, [x, y, 0]); 
+
+    //the mat4 remembers the pos
+    mat4.rotate(transformMatrix, transformMatrix, -0.05, [0, 0, 1]);
+    mat4.translate(transformMatrix, transformMatrix, [0.02, 0, 0]);
+    mat4.rotate(transformMatrix, transformMatrix, 2*0.05, [0, 0, 1]);
+    angle += 0.05;
+
+    gl.uniformMatrix4fv(transformLocation, false, transformMatrix);
+
+    gl.drawArrays(gl.TRIANGLES, 0, 3);
+    requestAnimationFrame(render);
+}
 
 render();
