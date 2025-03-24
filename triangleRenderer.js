@@ -95,25 +95,17 @@ gl.useProgram(shaderProgram);
 //mat4 init
 const transformLocation = gl.getUniformLocation(shaderProgram, 'u_transform');
 let transformMatrix = mat4.create();
-let angle = 0;
-let x = 0.0; 
-let y = 0.0;  
+let angle = 0; 
 let speed = 0.02; 
 
-mat4.translate(transformMatrix, transformMatrix, [-0.5, 0, 0]);
+// mat4.translate(transformMatrix, transformMatrix, [-0.5, 0, 0]);
 
 function render() {
     gl.clear(gl.COLOR_BUFFER_BIT);
 
-    //the pos is in x and y
-    // x += speed;
-    // if (x > 1.0) x = -1.0; 
-    // mat4.identity(transformMatrix); 
-    // mat4.translate(transformMatrix, transformMatrix, [x, y, 0]); 
-
     //the mat4 remembers the pos
     mat4.rotate(transformMatrix, transformMatrix, -0.05, [0, 0, 1]);
-    mat4.translate(transformMatrix, transformMatrix, [0.02, 0, 0]);
+    mat4.translate(transformMatrix, transformMatrix, [0.04, 0, 0]);
     mat4.rotate(transformMatrix, transformMatrix, 2*0.05, [0, 0, 1]);
     angle += 0.05;
 
