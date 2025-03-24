@@ -32,12 +32,11 @@ const gl = canvas.getContext('webgl');
 gl.viewport(0, 0, canvas.width, canvas.height);
 gl.clearColor(0, 0, 0, 1);
 
-
 //buffer
 const vertices = new Float32Array([
-     0.0,  0.5,   1.0, 0.0, 0.0,
-    -0.5, -0.5,   0.0, 1.0, 0.0,
-     0.5, -0.5,   0.0, 0.0, 1.0
+     150, 150,   1.0, 0.0, 0.0,
+     200, 400,   0.0, 1.0, 0.0,
+     400, 200,   0.0, 0.0, 1.0
 ]);
 const VBO = gl.createBuffer();
 gl.bindBuffer(gl.ARRAY_BUFFER, VBO);
@@ -94,25 +93,27 @@ gl.useProgram(shaderProgram);
 
 //mat4 init
 const transformLocation = gl.getUniformLocation(shaderProgram, 'u_transform');
-let transformMatrix = mat4.create();
+let mat = mat4.create();
 let angle = 0; 
 let speed = 0.02; 
 
-// mat4.translate(transformMatrix, transformMatrix, [-0.5, 0, 0]);
+// mat4.translate(mat, mat, [-0.5, 0, 0]);
+mat4.ortho(mat, 0, window.innerWidth, window.innerHeight, 0, -1, 1);
 
-function render() {
+function update() {
     gl.clear(gl.COLOR_BUFFER_BIT);
 
     //the mat4 remembers the pos
-    mat4.rotate(transformMatrix, transformMatrix, -0.05, [0, 0, 1]);
-    mat4.translate(transformMatrix, transformMatrix, [0.04, 0, 0]);
-    mat4.rotate(transformMatrix, transformMatrix, 2*0.05, [0, 0, 1]);
-    angle += 0.05;
+    mat4.rotate(mat, mat, -0.01, [0, 0, 1]);
+    // mat4.translate(mat, mat, [0.04, 0, 0]);
+    // mat4.rotate(mat, mat, 2*0.05, [0, 0, 1]);
+    // angle += 0.05;
 
-    gl.uniformMatrix4fv(transformLocation, false, transformMatrix);
+
+    gl.uniformMatrix4fv(transformLocation, false, mat);
 
     gl.drawArrays(gl.TRIANGLES, 0, 3);
-    requestAnimationFrame(render);
+    requestAnimationFrame(update);
 }
 
-render();
+update();
