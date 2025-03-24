@@ -20,12 +20,19 @@ function setAttribute(shaderProgram, atrtribName, perVertex, type, normalize, st
     gl.enableVertexAttribArray(positionLocation);
     gl.vertexAttribPointer(positionLocation, perVertex, type, normalize, stride, offset);
 }
+function render() {
+    gl.clear(gl.COLOR_BUFFER_BIT);
+    gl.drawElements(gl.TRIANGLES, indices.length, gl.UNSIGNED_SHORT, 0); 
+    requestAnimationFrame(render);
+}
 
+//canvas setup & context
 const canvas = document.getElementById('gameCanvas');
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 const gl = canvas.getContext('webgl');
 
+//buffers
 const vertices = new Float32Array ([
     -0.5,  0.5,         1.0, 0.0, 0.0, 
      0.5,  0.5,         0.0, 1.0, 0.0, 
@@ -46,6 +53,7 @@ const IBO = gl.createBuffer();
 gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, IBO);
 gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, indices, gl.STATIC_DRAW);
 
+//shader code & program
 const vertexShader = `
 attribute vec2 a_position;
 attribute vec3 color;
@@ -69,8 +77,29 @@ void main() {
 const shaderProgram = createShader(vertexShader, fragmentShader);
 gl.useProgram(shaderProgram);
 
-setAttribute(shaderProgram, 'a_position', 2, gl.FLOAT, false, 5 * Float32Array.BYTES_PER_ELEMENT, 0);
-setAttribute(shaderProgram, 'color', 3, gl.FLOAT, false, 5 * Float32Array.BYTES_PER_ELEMENT, 2 * Float32Array.BYTES_PER_ELEMENT);
 
-gl.clear(gl.COLOR_BUFFER_BIT);
-gl.drawElements(gl.TRIANGLES, indices.length, gl.UNSIGNED_SHORT, 0); 
+//attrib pointers & shader attributes
+const positionLocation = gl.getAttribLocation(shaderProgram, 'a_position');
+gl.enableVertexAttribArray(positionLocation);
+gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 5 * Float32Array.BYTES_PER_ELEMENT, 0);
+
+const positionLocation2 = gl.getAttribLocation(shaderProgram, 'color');
+gl.enableVertexAttribArray(positionLocation2);
+gl.vertexAttribPointer(positionLocation2, 3, gl.FLOAT, false, 5 * Float32Array.BYTES_PER_ELEMENT, 2 * Float32Array.BYTES_PER_ELEMENT);
+
+
+//unbind
+gl.bindBuffer(gl.ARRAY_BUFFER, null);
+gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, null);
+gl.disableVertexAttribArray(positionLocation);
+gl.useProgram(null);
+
+
+//bind
+gl.bindBuffer(gl.ARRAY_BUFFER, VBO);
+gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, IBO);
+gl.enableVertexAttribArray(positionLocation);
+gl.useProgram(shaderProgram);
+
+
+render();
