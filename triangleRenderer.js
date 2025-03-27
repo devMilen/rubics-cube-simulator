@@ -1,31 +1,3 @@
-import * as GL from 'gl.js';
-
-function compileShader(source, type) {
-    const shader = gl.createShader(type);
-    gl.shaderSource(shader, source);
-    gl.compileShader(shader);
-    return shader;
-}
-function createShader(vertexShader, fragmentShader) {
-    const vsid = compileShader(vertexShader, gl.VERTEX_SHADER);
-    const fsid = compileShader(fragmentShader, gl.FRAGMENT_SHADER);
-    
-    const shaderProgram = gl.createProgram();
-    gl.attachShader(shaderProgram, vsid);
-    gl.attachShader(shaderProgram, fsid);
-    gl.linkProgram(shaderProgram);
-    
-    gl.deleteShader(vsid);
-    gl.deleteShader(fsid);
-
-    return shaderProgram;
-}
-function render() {
-    gl.clear(gl.COLOR_BUFFER_BIT);
-    gl.drawArrays(gl.TRIANGLES, 0, 3);
-    requestAnimationFrame(render);
-}
-
 // canvas setup & webgl context
 const canvas = document.getElementById('gameCanvas');
 canvas.width = window.innerWidth;
@@ -40,7 +12,7 @@ const vertices = new Float32Array([
      200, 400,   0.0, 1.0, 0.0,
      400, 200,   0.0, 0.0, 1.0
 ]);
-const VBO = GL.createVertexBuffer(vertices, true, gl);
+const VBO = createVertexBuffer(vertices, true, gl);
 
 
 //shader code and program
@@ -65,30 +37,20 @@ void main() {
 }
 `;
 
-const shaderProgram = createShader(vertexShader, fragmentShader);
+const shaderProgram = createShader(vertexShader, fragmentShader, gl);
 gl.useProgram(shaderProgram);
 
 
 //attrib pointers & shader attributes
-const positionLocation = gl.getAttribLocation(shaderProgram, 'a_position');
-gl.enableVertexAttribArray(positionLocation);
-gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 5 * Float32Array.BYTES_PER_ELEMENT, 0);
+// const positionLocation = gl.getAttribLocation(shaderProgram, 'a_position');
+// gl.enableVertexAttribArray(positionLocation);
+// gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 5 * Float32Array.BYTES_PER_ELEMENT, 0);
+assignAttribPointer(shaderProgram, 'a_position', 2, gl.FLOAT, 5 * Float32Array.BYTES_PER_ELEMENT, 0, gl);
+assignAttribPointer(shaderProgram, 'color', 3, gl.FLOAT, 5 * Float32Array.BYTES_PER_ELEMENT, 2 * Float32Array.BYTES_PER_ELEMENT, gl);
 
-const positionLocation2 = gl.getAttribLocation(shaderProgram, 'color');
-gl.enableVertexAttribArray(positionLocation2);
-gl.vertexAttribPointer(positionLocation2,3, gl.FLOAT, false, 5 * Float32Array.BYTES_PER_ELEMENT, 2 * Float32Array.BYTES_PER_ELEMENT);
-
-
-//unbind
-gl.bindBuffer(gl.ARRAY_BUFFER, null);
-gl.disableVertexAttribArray(positionLocation);
-gl.useProgram(null);
-
-
-//bind
-gl.bindBuffer(gl.ARRAY_BUFFER, VBO);
-gl.enableVertexAttribArray(positionLocation);
-gl.useProgram(shaderProgram);
+// const positionLocation2 = gl.getAttribLocation(shaderProgram, 'color');
+// gl.enableVertexAttribArray(positionLocation2);
+// gl.vertexAttribPointer(positionLocation2, 3, gl.FLOAT, false, 5 * Float32Array.BYTES_PER_ELEMENT, 2 * Float32Array.BYTES_PER_ELEMENT);
 
 
 //mat4 init
