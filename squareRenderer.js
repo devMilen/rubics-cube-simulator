@@ -1,25 +1,3 @@
-// function compileShader(source, type) {
-//     const shader = gl.createShader(type);
-//     gl.shaderSource(shader, source);
-//     gl.compileShader(shader);
-//     return shader;
-// }
-// function createShader(vertexShader, fragmentShader) {
-//     const vsid = compileShader(vertexShader, gl.VERTEX_SHADER);
-//     const fsid = compileShader(fragmentShader, gl.FRAGMENT_SHADER);
-
-//     const shaderProgram = gl.createProgram();
-//     gl.attachShader(shaderProgram, vsid);
-//     gl.attachShader(shaderProgram, fsid);
-//     gl.linkProgram(shaderProgram);
-
-//     return shaderProgram;
-// }
-// function setAttribute(shaderProgram, atrtribName, perVertex, type, normalize, stride, offset) {
-//     const positionLocation = gl.getAttribLocation(shaderProgram, atrtribName);
-//     gl.enableVertexAttribArray(positionLocation);
-//     gl.vertexAttribPointer(positionLocation, perVertex, type, normalize, stride, offset);
-// }
 function render() {
     gl.clear(gl.COLOR_BUFFER_BIT);
     gl.drawElements(gl.TRIANGLES, indices.length, gl.UNSIGNED_SHORT, 0); 
@@ -31,6 +9,7 @@ const canvas = document.getElementById('gameCanvas');
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 const gl = canvas.getContext('webgl');
+gl.clearColor(0, 0, 0, 1);
 
 
 const vertexShader = `
