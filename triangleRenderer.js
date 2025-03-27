@@ -27,7 +27,6 @@ void main() {
 }
 `;
 
-
 const vertices = new Float32Array([
      150, 150,   1.0, 0.0, 0.0,
      200, 400,   0.0, 1.0, 0.0,
@@ -43,10 +42,11 @@ assignAttribPointer(shaderProgram, 'color', 3, gl.FLOAT, 5 * Float32Array.BYTES_
 
 
 
-//mat4 init
 const transformLocation = gl.getUniformLocation(shaderProgram, 'u_transform');
 let mat = mat4.create();
-mat4.ortho(mat, 0, 1, 0, 1, -1, 1);
+mat4.ortho(mat, 0, window.innerWidth, window.innerHeight, 0, -1, 1);
+mat4.translate(mat, mat, [200, 200, 0.0]);
+mat4.scale(mat, mat, [5.0, 5.0, 1.0]);    
 
 function update() {
     gl.clear(gl.COLOR_BUFFER_BIT);

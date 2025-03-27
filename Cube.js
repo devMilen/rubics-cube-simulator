@@ -101,15 +101,24 @@ let mat = mat4.create();
 mat4.ortho(mat, -1, 1, -1, 1, -1, 1);
 let angle = 1;
 
+let angleX = 0; // Initial rotation angle around the X axis
+let angleY = 0; // Initial rotation angle around the Y axis
+let angleZ = 0; // Initial rotation angle around the Z axis
+
 gl.enable(gl.DEPTH_TEST);
 
 function update() {
     gl.clear(gl.COLOR_BUFFER_BIT);
 
     mat4.identity(mat);
-    mat4.rotateY(mat, mat, angle * 0.3);
-    mat4.rotateX(mat, mat, angle * 0.2); 
-    angle += 0.01;
+    mat4.rotateX(mat, mat, angleX); // Rotate around the X axis
+    mat4.rotateY(mat, mat, angleY); // Rotate around the Y axis
+    mat4.rotateZ(mat, mat, angleZ); // Rotate around the Z axis
+
+    // Increment rotation angles for next frame
+    angleX += 0.01; // Adjust rotation speed for X-axis
+    angleY += 0.02; // Adjust rotation speed for Y-axis
+    angleZ += 0.015; // Adjust rotation speed for Z-axis
 
     gl.uniformMatrix4fv(matLoc, false, mat);
 
